@@ -1,9 +1,10 @@
-import matplotlib
-matplotlib.rcParams['interactive'] == True
-matplotlib.interactive(True)
-from matplotlib import pyplot as plt
-from skimage import color
-from skimage import io
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Dec  19 02:07:08 2020
+
+@author: theo
+"""
+
 import itertools
 
 def listsCommon(list1, list2) :
@@ -109,14 +110,3 @@ def getAreas(image) :
                     areas[i][j] = k+1
 
     return(areas)
-
-image = color.rgb2gray(io.imread('testing.png'))
-areas = getAreas(image)
-
-plt.figure(1)
-plt.imshow(image)
-plt.figure(2)
-plt.imshow(areas)
-plt.show()
-input("waiting...")
-plt.close()
