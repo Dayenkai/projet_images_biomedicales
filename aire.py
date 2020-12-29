@@ -106,16 +106,13 @@ def getAreas(image) :
         if not (__unlinkedJoints(jointures)) :
             break
 
-    # change the color of connected areas to the same one
     for i in range(height) :
         for j in range(width) :
+            # change the color of connected areas to the same one
             for k in range(len(jointures)) :
                 if (areas[i][j] in jointures[k]) :
                     areas[i][j] = k+1
-    
-    # 
-    for i in range(height) :
-        for j in range(width) :
+            # add pixel to area density list
             if (areas[i][j]) :
                 if (areas[i][j] in dictionnary.keys()) :
                     dictionnary[areas[i][j]] += 1
