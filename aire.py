@@ -6,8 +6,9 @@ Created on Tue Dec  19 02:07:08 2020
 """
 
 import itertools
+import operator
 
-def listsCommon(list1, list2) :
+def __listsCommon(list1, list2) :
     """Returns True if 'list1' and 'list2' have at least 1 element in common, False otherwise
     list1 : 1D int list
     list2 : 1D int list
@@ -18,18 +19,20 @@ def listsCommon(list1, list2) :
                 return True
     return False
 
-def unlinkedJoints(theList) :
+def __unlinkedJoints(theList) :
     """Returns True if 'theList' contains lists that have at least 1 element in common
     theList : 2D list of 1D int list
     """
     for i in range(len(theList)) :
         for j in range(i+1, len(theList)) :
-            if (listsCommon(theList[i], theList[j])) :
+            if (__listsCommon(theList[i], theList[j])) :
                 return True
     return False
 
 def getAreas(image) :
-    """Returns 'image', but with 1 color per connected area
+    """Returns a tuple of 2 elements:
+        1: 2D list of 'image', but with 1 color per connected area
+        2: list different areas sorted biggest to smallest
     image : 2D list of greyscale image
     """
     height = image.shape[0]
@@ -37,6 +40,7 @@ def getAreas(image) :
     areas = [[0 for i in range(width)] for i in range(height)]
     color = 0
     jointures = []
+    dictionnary = {}
 
     # goes through the image left to right, top to bottom,
     # and joins pixels that are connected to the top or to the left
@@ -91,7 +95,7 @@ def getAreas(image) :
         while (i < end) :
             j=i+1
             while (j < end) :
-                if listsCommon(jointures[i], jointures[j]) :
+                if __listsCommon(jointures[i], jointures[j]) :
                     jointures[i] = list(set(jointures[i]).union(jointures[j]))
                     jointures[i].sort()
                     jointures.pop(j)
@@ -99,7 +103,7 @@ def getAreas(image) :
                 else :
                     j+=1
             i+=1
-        if not (unlinkedJoints(jointures)) :
+        if not (__unlinkedJoints(jointures)) :
             break
 
     # change the color of connected areas to the same one
@@ -108,5 +112,15 @@ def getAreas(image) :
             for k in range(len(jointures)) :
                 if (areas[i][j] in jointures[k]) :
                     areas[i][j] = k+1
+    
+    # 
+    for i in range(height) :
+        for j in range(width) :
+            if (areas[i][j]) :
+                if (areas[i][j] in dictionnary.keys()) :
+                    dictionnary[areas[i][j]] += 1
+                else :
+                    dictionnary[areas[i][j]] = 1
+    dictionnary = dict(sorted(dictionnary.items(), key=operator.itemgetter(1),reverse=True))
 
-    return(areas)
+    return(areas, dictionnary)

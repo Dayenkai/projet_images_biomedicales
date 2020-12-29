@@ -13,16 +13,16 @@ from skimage import color
 from skimage import io
 
 import aire
-import snake_segmentation as ss
-import edge_segmentation as es
+##import snake_segmentation as ss
+##import edge_segmentation as es
 
 image = color.rgb2gray(io.imread('testing.png'))
 areas = aire.getAreas(image)
-
 plt.figure(1)
 plt.imshow(image)
 plt.figure(2)
-plt.imshow(areas)
+plt.imshow(areas[0])
 plt.show()
+print(areas[1])
 input("waiting...")
 plt.close()
