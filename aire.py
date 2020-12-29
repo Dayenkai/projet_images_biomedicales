@@ -29,11 +29,12 @@ def __unlinkedJoints(theList) :
                 return True
     return False
 
-def getAreas(image) :
+def getAreas(image, hard) :
     """Returns a tuple of 2 elements:
         1: 2D list of 'image', but with 1 color per connected area
         2: list different areas sorted biggest to smallest
     image : 2D list of greyscale image
+    hard : boolean that governs how areas are sperated
     """
     height = image.shape[0]
     width = image.shape[1]
@@ -44,6 +45,7 @@ def getAreas(image) :
 
     # goes through the image left to right, top to bottom,
     # and joins pixels that are connected to the top or to the left
+    print(" 'getAreas': 1/4")
     for i in range(1, height-1) :
         for j in range(1, width-1) :
             if image[i][j] :
@@ -62,26 +64,29 @@ def getAreas(image) :
                 areas[i][j] = currentColor
 
     # fetch the joints between areas that should be connected
+    print(" 'getAreas': 2/4")
     for i in range(1, height-1) :
         for j in range(1, width-1) :
             if (areas[i][j]) :
                 tmp = [areas[i][j]]
-                if (areas[i-1][j-1]) :
-                    tmp.append(areas[i-1][j-1])
                 if (areas[i-1][j]) :
                     tmp.append(areas[i-1][j])
-                if (areas[i-1][j+1]) :
-                    tmp.append(areas[i-1][j+1])
                 if (areas[i][j-1]) :
                     tmp.append(areas[i][j-1])
                 if (areas[i][j+1]) :
                     tmp.append(areas[i][j+1])
-                if (areas[i+1][j-1]) :
-                    tmp.append(areas[i+1][j-1])
                 if (areas[i+1][j]) :
                     tmp.append(areas[i+1][j])
-                if (areas[i+1][j+1]) :
-                    tmp.append(areas[i+1][j+1])
+                if (not hard) :
+                    if (areas[i-1][j-1]) :
+                        tmp.append(areas[i-1][j-1])
+                    if (areas[i-1][j+1]) :
+                        tmp.append(areas[i-1][j+1])
+                    if (areas[i+1][j-1]) :
+                        tmp.append(areas[i+1][j-1])
+                    if (areas[i+1][j+1]) :
+                        tmp.append(areas[i+1][j+1])
+
                 tmp.sort()
                 tmp = list(set(tmp))
                 jointures.append(tmp)
@@ -89,6 +94,8 @@ def getAreas(image) :
     jointures = list(jointures for jointures,_ in itertools.groupby(jointures))
 
     # create a list of list of colors that should be the same
+    
+    print(" 'getAreas': 3/4")
     while True :
         i=0
         end=len(jointures)
@@ -106,13 +113,14 @@ def getAreas(image) :
         if not (__unlinkedJoints(jointures)) :
             break
 
+    print(" 'getAreas': 4/4")
     for i in range(height) :
         for j in range(width) :
             # change the color of connected areas to the same one
             for k in range(len(jointures)) :
                 if (areas[i][j] in jointures[k]) :
                     areas[i][j] = k+1
-            # add pixel to area density list
+            # add pixel to area density
             if (areas[i][j]) :
                 if (areas[i][j] in dictionnary.keys()) :
                     dictionnary[areas[i][j]] += 1

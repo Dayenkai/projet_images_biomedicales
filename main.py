@@ -13,13 +13,15 @@ from skimage import color
 from skimage import io
 
 import aire
-##import snake_segmentation as ss
+from snake_segmentation import segment_the_bail as snakeSeg
 ##import edge_segmentation as es
 
-image = color.rgb2gray(io.imread('testing.png'))
-areas = aire.getAreas(image)
+image = color.rgb2gray(io.imread('..\\test.bmp'))
+seg = snakeSeg(image)
+areas = aire.getAreas(seg, True)
+
 plt.figure(1)
-plt.imshow(image)
+plt.imshow(seg)
 plt.figure(2)
 plt.imshow(areas[0])
 plt.show()
