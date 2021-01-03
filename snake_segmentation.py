@@ -31,7 +31,7 @@ def snake_segmentation(image):
     ax = fig.add_subplot(111)
     plt.gray()
     ax.imshow(image)
-    ax.plot(init_array[:, 0], init_array[:, 1], '--r', lw=3)
+    #ax.plot(init_array[:, 0], init_array[:, 1], '--r', lw=3)
     ax.plot(snakeman[:, 0], snakeman[:, 1], '-b', lw=3)
     ax.set_xticks([]), ax.set_yticks([])
     ax.axis([0, image.shape[1], image.shape[0], 0])
