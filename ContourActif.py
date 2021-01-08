@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 import numpy as np
 
-img = cv2.imread('testing.png', cv2.IMREAD_COLOR)
+img = cv2.imread('C:\\Users\\beker\\Desktop\\training_sa_crop_pat0\\Itraining_8170.bmp', cv2.IMREAD_COLOR)
 
 
 #convert img to grey
@@ -20,7 +20,6 @@ image_binary = np.zeros((img.shape[1],
 
 
 r_mask = np.zeros_like(img, dtype='bool')
-
 #set a thresh
 thresh = 70
 
