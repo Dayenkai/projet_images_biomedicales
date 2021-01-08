@@ -7,6 +7,16 @@ Created on Tue Dec  19 02:07:08 2020
 
 import itertools
 import operator
+import matplotlib
+matplotlib.rcParams['interactive'] == True
+matplotlib.interactive(True)
+from matplotlib import pyplot as plt
+from skimage import color
+from skimage import io
+import numpy as np
+import re
+import csv
+import os
 
 def __listsCommon(list1, list2) :
     """Returns True if 'list1' and 'list2' have at least 1 element in common, False otherwise
@@ -129,3 +139,61 @@ def getAreas(image, hard) :
     dictionnary = dict(sorted(dictionnary.items(), key=operator.itemgetter(1),reverse=True))
 
     return(areas, dictionnary)
+
+def areasImagesForGroundTruth() :
+    images_list = io.imread_collection('working_images\\*.bmp', conserve_memory=True)
+    for cpt in range(len(images_list)):
+        print("image: "+str(cpt+1)+"/"+str(len(images_list)))
+        image = images_list[cpt]
+        for i in range(image.shape[0]):
+            for j in range(image.shape[1]):
+                if (image[i][j]<200) :
+                    image[i][j] = 0
+                else :
+                    image[i][j] = 1
+
+        areas = getAreas(image, True)
+        filename = 'images\\resultats\\ground_truth_area\\gtximg'+str(cpt)+'.bmp'
+        io.imsave(filename, np.asarray(areas[0]))
+
+def areasImagesForRegionSegmentation() :
+    images_list = io.imread_collection('images\\resultats\\snake_seg\\modified\\*.bmp', conserve_memory=True)
+    for cpt in range(len(images_list)):
+        print("image: "+str(cpt+1)+"/"+str(len(images_list)))
+        image = color.rgb2gray(images_list[cpt])
+
+        for i in range(image.shape[0]):
+            for j in range(image.shape[1]):
+                if (image[i][j]>0) :
+                    image[i][j] = 1
+                else :
+                    image[i][j] = 0
+
+        areas = getAreas(image, True)
+        filename = 'images\\resultats\\snake_seg_area\\rgximg'+str(cpt)+'.bmp'
+        io.imsave(filename, np.asarray(areas[0]))
+
+def writeCSV() :
+    path = "images\\resultats\\snake_seg_area"
+    table = []
+    images_list = io.imread_collection(str(path+"\\*.bmp"), conserve_memory=True)
+    files = os.listdir(path)
+    for i in range(len(images_list)):
+        print(str(files[i])+": "+str(i+1)+"/"+str(len(images_list)))        
+        image = color.rgb2gray(images_list[i])
+        values = list(getAreas(image, True)[1].values())[:2]
+        line = [files[i]]
+        for v in values:
+            line.append(v)
+        table.append(line)
+    with open(path+"\\output.csv", "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(table)
+    
+#areasImagesForRegionSegmentation()
+writeCSV()
+
+"""
+input("waiting...")
+plt.close()
+"""

@@ -35,6 +35,8 @@ def snake_segmentation(image):
     ax.plot(snakeman[:, 0], snakeman[:, 1], '-b', lw=3)
     ax.set_xticks([]), ax.set_yticks([])
     ax.axis([0, image.shape[1], image.shape[0], 0])
+
+    return image
     
     
 img = io.imread('C:\\Users\\beker\\Desktop\\training_sa_crop_pat0\\training_sa_crop_pat00075.bmp')
